@@ -3,7 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Aung Khant — PhD researcher and electrical and electronic engineer specialising in power electronics, microgrids and model predictive control.">
+
+  <meta
+    name="description"
+    content="Aung Khant — PhD researcher and electrical and electronic engineer specialising in power electronics, microgrids and model predictive control."
+  >
+
   <title>Aung Khant | Electrical & Electronic Engineer</title>
 
   <style>
@@ -24,7 +29,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 24px 8%;
+      padding: 24px 7%;
       background: white;
       border-bottom: 1px solid #e2e7ee;
     }
@@ -41,15 +46,29 @@
       text-decoration: none;
     }
 
+    nav a:hover {
+      color: #087f8c;
+    }
+
     main {
       min-height: 78vh;
       display: flex;
       align-items: center;
-      padding: 70px 8%;
+      padding: 65px 7%;
     }
 
     .hero {
-      max-width: 780px;
+      width: 100%;
+      max-width: 1500px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.6fr);
+      gap: 70px;
+      align-items: center;
+    }
+
+    .hero-content {
+      max-width: 850px;
     }
 
     .label {
@@ -62,7 +81,7 @@
     h1 {
       color: #0c365f;
       font-family: Georgia, serif;
-      font-size: clamp(2.7rem, 7vw, 5.5rem);
+      font-size: clamp(3rem, 5.2vw, 5.2rem);
       line-height: 1.08;
       margin: 18px 0;
     }
@@ -84,19 +103,57 @@
       font-weight: bold;
     }
 
+    .button:hover {
+      background: #066974;
+    }
+
+    .photo-frame {
+      justify-self: end;
+      width: 100%;
+      max-width: 380px;
+    }
+
+    .profile-photo {
+      display: block;
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      object-fit: cover;
+      object-position: center;
+      border: 8px solid white;
+      border-radius: 12px;
+      box-shadow: 0 22px 55px rgba(12, 54, 95, 0.18);
+    }
+
+    figcaption {
+      margin-top: 12px;
+      color: #667085;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
     footer {
-      padding: 25px 8%;
+      padding: 25px 7%;
       background: #0c365f;
       color: white;
     }
 
-    @media (max-width: 650px) {
+    @media (max-width: 850px) {
       nav {
         display: none;
       }
 
       main {
-        padding-top: 45px;
+        padding-top: 50px;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+        gap: 45px;
+      }
+
+      .photo-frame {
+        justify-self: start;
+        max-width: 340px;
       }
     }
   </style>
@@ -107,26 +164,41 @@
     <div class="logo">Aung Khant</div>
 
     <nav>
-      <a href="#">Home</a>
-      <a href="#">Research</a>
-      <a href="#">Projects</a>
-      <a href="#">Teaching</a>
+      <a href="#home">Home</a>
+      <a href="#research">Research</a>
+      <a href="#projects">Projects</a>
+      <a href="#teaching">Teaching</a>
     </nav>
   </header>
 
-  <main>
+  <main id="home">
     <section class="hero">
-      <p class="label">PhD Researcher · Electrical & Electronic Engineer</p>
+      <div class="hero-content">
+        <p class="label">
+          PhD Researcher · Electrical & Electronic Engineer
+        </p>
 
-      <h1>Engineering intelligent and sustainable energy systems.</h1>
+        <h1>
+          Engineering intelligent and sustainable energy systems.
+        </h1>
 
-      <p class="introduction">
-        I specialise in power electronics, microgrids and model predictive
-        control, connecting academic research with practical engineering
-        experience.
-      </p>
+        <p class="introduction">
+          I specialise in power electronics, microgrids and model predictive
+          control, connecting academic research with practical engineering
+          experience.
+        </p>
 
-      <a class="button" href="#">Explore my research</a>
+        <a class="button" href="#research">Explore my research</a>
+      </div>
+
+      <figure class="photo-frame">
+        <img
+          class="profile-photo"
+          src="profile-photo.png"
+          alt="Aung Khant attending ECCE Europe 2025 in Birmingham"
+        >
+        <figcaption>ECCE Europe 2025 · Birmingham, UK</figcaption>
+      </figure>
     </section>
   </main>
 
