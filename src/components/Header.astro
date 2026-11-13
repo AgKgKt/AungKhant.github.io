@@ -1,0 +1,59 @@
+---
+import { nav, site } from '../site';
+import { href, isActive } from '../lib/url';
+
+const path = Astro.url.pathname;
+const cvHref = site.cvPdf ? href(site.cvPdf) : href('/cv/');
+---
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href={href('/')}>{site.name}</a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+      Menu
+    </button>
+    <nav class="site-nav" id="site-nav" aria-label="Main" data-open="false">
+      <ul>
+        {
+          nav.map((item) => (
+            <li>
+              <a href={href(item.path)} aria-current={isActive(path, item.path) ? 'page' : undefined}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+        <li class="nav-divider" aria-hidden="true"></li>
+        <li class="nav-utility">
+          <a href={cvHref} aria-current={isActive(path, '/cv/') ? 'page' : undefined}>
+            {site.cvPdf ? 'Download CV' : 'CV'}
+          </a>
+        </li>
+        <li class="nav-utility">
+          <a href={href('/contact/')} aria-current={isActive(path, '/contact/') ? 'page' : undefined}>
+            Contact
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script is:inline>
+  (() => {
+    const btn = document.querySelector('.nav-toggle');
+    const nav = document.getElementById('site-nav');
+    if (!btn || !nav) return;
+    const set = (open) => {
+      nav.dataset.open = String(open);
+      btn.setAttribute('aria-expanded', String(open));
+    };
+    btn.addEventListener('click', () => set(nav.dataset.open !== 'true'));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && nav.dataset.open === 'true') {
+        set(false);
+        btn.focus();
+      }
+    });
+  })();
+</script>

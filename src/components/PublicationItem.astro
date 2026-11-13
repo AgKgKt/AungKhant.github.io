@@ -1,0 +1,49 @@
+---
+import type { CollectionEntry } from 'astro:content';
+interface Props {
+  pub: CollectionEntry<'publications'>;
+}
+const { data } = Astro.props.pub;
+const statusLabel: Record<string, string> = {
+  published: 'Published',
+  accepted: 'Accepted',
+  'under-review': 'Under review',
+  'in-preparation': 'In preparation',
+  'to-confirm': 'Details to confirm',
+};
+const typeLabel: Record<string, string> = {
+  conference: 'Conference paper',
+  journal: 'Journal article',
+  thesis: 'Thesis',
+  presentation: 'Presentation',
+  poster: 'Poster',
+  other: 'Other',
+};
+---
+
+<li>
+  <ul class="meta">
+    <li>{typeLabel[data.type]}</li>
+    <li>{data.year}</li>
+    <li><span class="status">{statusLabel[data.status]}</span></li>
+  </ul>
+  <h3>{data.title}</h3>
+  <p>{data.authors.length > 0 ? data.authors.join(', ') : 'Authors to confirm'}</p>
+  <p class="muted">{data.venue}</p>
+  {
+    (data.doi || data.url) && (
+      <p class="small">
+        {data.doi && <a href={`https://doi.org/${data.doi}`}>DOI: {data.doi}</a>}
+        {data.doi && data.url && ' · '}
+        {data.url && <a href={data.url}>Publisher page for “{data.title}”</a>}
+      </p>
+    )
+  }
+  {
+    data.placeholder && (
+      <p class="small muted">
+        Placeholder record: the full title, author list and link will be added once confirmed.
+      </p>
+    )
+  }
+</li>

@@ -1,0 +1,33 @@
+---
+import { href } from '../lib/url';
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lede?: string;
+  crumbs?: { label: string; path: string }[];
+}
+const { eyebrow, title, lede, crumbs = [] } = Astro.props;
+---
+
+<div class="page-head">
+  <div class="wrap">
+    {
+      crumbs.length > 0 && (
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <ol>
+            {crumbs.map((c) => (
+              <li>
+                <a href={href(c.path)}>{c.label}</a>
+              </li>
+            ))}
+            <li aria-current="page">{title}</li>
+          </ol>
+        </nav>
+      )
+    }
+    {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+    <h1>{title}</h1>
+    {lede && <p class="lede">{lede}</p>}
+    <slot />
+  </div>
+</div>

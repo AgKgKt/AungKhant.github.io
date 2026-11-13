@@ -1,0 +1,17 @@
+---
+// A visible "to confirm" note. Hidden everywhere when site.showTodos is false.
+import { site } from '../site';
+interface Props {
+  label?: string;
+}
+const { label = 'To confirm' } = Astro.props;
+---
+
+{
+  site.showTodos && (
+    <p class="todo">
+      <strong>{label}</strong>
+      <slot />
+    </p>
+  )
+}

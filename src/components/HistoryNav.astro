@@ -1,0 +1,26 @@
+---
+import { href } from '../lib/url';
+const path = Astro.url.pathname;
+const items = [
+  { label: 'History overview', path: '/history/' },
+  { label: 'Arakan', path: '/history/arakan/' },
+  { label: 'Sources', path: '/history/arakan/sources/' },
+  { label: 'Image credits', path: '/history/arakan/image-credits/' },
+];
+---
+
+<nav class="subnav" aria-label="History section">
+  <div class="wrap">
+    <ul>
+      {
+        items.map((i) => (
+          <li>
+            <a href={href(i.path)} aria-current={path === href(i.path) ? 'page' : undefined}>
+              {i.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</nav>
