@@ -1,0 +1,65 @@
+---
+import Base from '../../../layouts/Base.astro';
+import PageHead from '../../../components/PageHead.astro';
+import HistoryNav from '../../../components/HistoryNav.astro';
+import Todo from '../../../components/Todo.astro';
+import { href } from '../../../lib/url';
+import { published, formatDate, readingTime } from '../../../lib/content';
+
+const articles = (await published('history')).sort((a, b) => +b.data.published - +a.data.published);
+const periods = [...new Set(articles.map((a) => a.data.period))];
+const topics = [...new Set(articles.flatMap((a) => a.data.topics))].sort();
+const basisLabel = {
+  primary: 'Primary sources',
+  secondary: 'Secondary sources',
+  'primary-and-secondary': 'Primary and secondary sources',
+};
+---
+
+<Base
+  title="Arakan history"
+  section="history"
+  description="Articles on the documented history of Arakan and Mrauk-U, with sources, bibliography and image credits."
+>
+  <PageHead
+    eyebrow="Independent historical research and public scholarship"
+    title="Arakan history"
+    lede="Articles on Arakan and Mrauk-U, each with its sources, its image credits and a note on what remains uncertain."
+    crumbs={[{ label: 'History', path: '/history/' }]}
+  />
+  <HistoryNav />
+
+  <div class="section">
+    <div class="wrap split">
+      <header>
+        <p class="eyebrow">Browse</p>
+        <h2 class="small" style="font-family:var(--sans);margin-bottom:.3rem">Periods</h2>
+        <ul class="meta" style="flex-direction:column">{periods.map((p) => <li>{p}</li>)}</ul>
+        <h2 class="small" style="font-family:var(--sans);margin:1rem 0 .3rem">Topics</h2>
+        <ul class="meta" style="flex-direction:column">{topics.map((t) => <li>{t}</li>)}</ul>
+      </header>
+      <div>
+        <h2>Articles</h2>
+        <ul class="entry-list">
+          {
+            articles.map((a) => (
+              <li>
+                <ul class="meta">
+                  <li>{a.data.period}</li>
+                  <li><time datetime={a.data.published.toISOString()}>{formatDate(a.data.published)}</time></li>
+                  <li>{readingTime(a.body)} min read</li>
+                  <li>{basisLabel[a.data.sourceBasis]}</li>
+                  {a.data.placeholder && <li><span class="status">Placeholder</span></li>}
+                </ul>
+                <h3><a href={href(`/history/arakan/${a.id}/`)}>{a.data.title}</a></h3>
+                {a.data.subtitle && <p><em>{a.data.subtitle}</em></p>}
+                <p class="muted">{a.data.summary}</p>
+              </li>
+            ))
+          }
+        </ul>
+        <Todo label="Coming">The first fully sourced articles. A timeline and map are planned for later.</Todo>
+      </div>
+    </div>
+  </div>
+</Base>

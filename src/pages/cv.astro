@@ -1,0 +1,50 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import Todo from '../components/Todo.astro';
+import { site } from '../site';
+import { href } from '../lib/url';
+---
+
+<Base title="CV" description={`Curriculum vitae of ${site.name}.`}>
+  <PageHead eyebrow="Curriculum vitae" title="CV" lede={`${site.name} · ${site.role}`}>
+    {
+      site.cvPdf && (
+        <div class="actions">
+          <a class="btn btn-primary" href={href(site.cvPdf)} download>Download CV (PDF)</a>
+        </div>
+      )
+    }
+  </PageHead>
+
+  <div class="section">
+    <div class="wrap split">
+      <header><p class="eyebrow">Summary</p></header>
+      <div>
+        {!site.cvPdf && <Todo label="PDF to add">A downloadable CV will be available here.</Todo>}
+        <dl class="deflist">
+          <dt>Current</dt>
+          <dd>PhD researcher, {site.institution}</dd>
+          <dt>Research</dt>
+          <dd>{site.researchTitle}</dd>
+          <dt>Areas</dt>
+          <dd>
+            Hybrid AC/DC microgrids · power electronics · model predictive control · converter control ·
+            real-time and HIL validation
+          </dd>
+          <dt>Tools</dt>
+          <dd>MATLAB/Simulink</dd>
+          <dt>Education</dt>
+          <dd><Todo>Degrees, institutions and years.</Todo></dd>
+          <dt>Experience</dt>
+          <dd><Todo>Roles, organisations and dates.</Todo></dd>
+        </dl>
+        <p style="margin-top:1.5rem">
+          <a class="arrow-link" href={href('/publications/')}>Publications</a>
+          &nbsp;&nbsp;
+          <a class="arrow-link" href={href('/teaching/')}>Teaching</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</Base>

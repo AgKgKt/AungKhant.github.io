@@ -1,0 +1,73 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import Todo from '../components/Todo.astro';
+---
+
+<Base
+  title="Teaching"
+  description="University laboratory teaching, dissertation guidance and engineering practice."
+>
+  <PageHead
+    eyebrow="Teaching and practice"
+    title="Teaching and engineering practice"
+    lede="Laboratory and practical teaching, dissertation guidance, and the engineering experience that informs both."
+  />
+
+  <section class="section" aria-labelledby="philosophy">
+    <div class="wrap split">
+      <header><p class="eyebrow">Approach</p></header>
+      <div>
+        <h2 id="philosophy">Teaching philosophy</h2>
+        <Todo>
+          A short statement, in your own words, of how you teach and why — ideally with one real example
+          from a laboratory or practical session.
+        </Todo>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="teaching">
+    <div class="wrap split">
+      <header><p class="eyebrow">University teaching</p></header>
+      <div>
+        <h2 id="teaching">What I teach</h2>
+        <dl class="deflist">
+          <dt>Laboratories and practicals</dt>
+          <dd>
+            University laboratory and practical teaching.
+            <Todo>Modules, levels and institutions supported, with dates.</Todo>
+          </dd>
+          <dt>Dissertations and projects</dt>
+          <dd>
+            Dissertation guidance and marking.
+            <Todo>Level (BEng/MSc) and typical project areas.</Todo>
+          </dd>
+          <dt>Materials</dt>
+          <dd>
+            <Todo>Selected teaching materials, where ownership and permissions allow.</Todo>
+          </dd>
+        </dl>
+        <p class="small muted">
+          Student feedback will appear here only if it is genuine, anonymised and ethically usable.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="practice">
+    <div class="wrap split">
+      <header><p class="eyebrow">Engineering practice</p></header>
+      <div>
+        <h2 id="practice">Experience beyond the university</h2>
+        <dl class="deflist">
+          <dt>Electrical engineering</dt>
+          <dd>Electrical engineering and commissioning experience.</dd>
+          <dt>Technical service</dt>
+          <dd>Technical service leadership and training.</dd>
+        </dl>
+        <Todo>Which roles, organisations and dates you are happy to name publicly.</Todo>
+      </div>
+    </div>
+  </section>
+</Base>

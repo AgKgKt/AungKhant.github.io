@@ -1,0 +1,58 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import Todo from '../../components/Todo.astro';
+import { href } from '../../lib/url';
+import { published } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const entries = (await published('research')).sort((a, b) => a.data.order - b.data.order);
+  return entries.map((entry, i) => ({
+    params: { id: entry.id },
+    props: { entry, next: entries[(i + 1) % entries.length] },
+  }));
+}
+
+const { entry, next } = Astro.props;
+const { Content } = await render(entry);
+const statusLabel = { 'in-progress': 'In progress', completed: 'Completed', planned: 'Planned' };
+---
+
+<Base title={entry.data.title} description={entry.data.summary} noindex={entry.data.placeholder}>
+  <PageHead
+    eyebrow="Research"
+    title={entry.data.title}
+    lede={entry.data.summary}
+    crumbs={[{ label: 'Research', path: '/research/' }]}
+  />
+  <div class="section">
+    <div class="wrap split">
+      <header>
+        <p class="eyebrow">Methods</p>
+        <ul class="meta" style="flex-direction:column">
+          {entry.data.methods.map((m) => <li>{m}</li>)}
+        </ul>
+        <p><span class="status">{statusLabel[entry.data.status]}</span></p>
+      </header>
+      <div>
+        {
+          entry.data.placeholder && (
+            <Todo label="Outline">
+              This page is an outline. Specific contributions, figures and results will be added once
+              confirmed for publication.
+            </Todo>
+          )
+        }
+        <div class="prose"><Content /></div>
+        {
+          next && next.id !== entry.id && (
+            <p style="margin-top:2.5rem">
+              Next: <a class="arrow-link" href={href(`/research/${next.id}/`)}>{next.data.title}</a>
+            </p>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</Base>

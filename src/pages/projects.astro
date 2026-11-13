@@ -1,0 +1,37 @@
+---
+import { render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import { published } from '../lib/content';
+
+const entries = (await published('projects')).sort((a, b) => a.data.order - b.data.order);
+const projects = await Promise.all(entries.map(async (e) => ({ e, ...(await render(e)) })));
+const statusLabel = { 'in-progress': 'In progress', completed: 'Completed', planned: 'Planned' };
+---
+
+<Base title="Projects" description="Technical projects and validation work by Aung Khant.">
+  <PageHead
+    eyebrow="Projects"
+    title="Technical projects"
+    lede="Selected engineering and validation work, described at a level that is appropriate to share publicly."
+  />
+  <div class="section">
+    <div class="wrap">
+      <ul class="entry-list">
+        {
+          projects.map(({ e, Content }) => (
+            <li>
+              <ul class="meta">
+                <li><span class="status">{e.data.placeholder ? 'Placeholder' : statusLabel[e.data.status]}</span></li>
+                {e.data.tools.map((t) => <li>{t}</li>)}
+              </ul>
+              <h2 style="font-size:1.5rem">{e.data.title}</h2>
+              <p class="muted">{e.data.summary}</p>
+              <div class="prose"><Content /></div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</Base>

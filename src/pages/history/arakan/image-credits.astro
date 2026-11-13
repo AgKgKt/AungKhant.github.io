@@ -1,0 +1,61 @@
+---
+import Base from '../../../layouts/Base.astro';
+import PageHead from '../../../components/PageHead.astro';
+import HistoryNav from '../../../components/HistoryNav.astro';
+import { href } from '../../../lib/url';
+import { published } from '../../../lib/content';
+
+// Built automatically from the `cover` field of every non-placeholder article.
+const withImages = (await published('history')).filter((a) => !a.data.placeholder && a.data.cover);
+---
+
+<Base
+  title="Image credits"
+  section="history"
+  description="Sources, rights and reuse information for images used in the Arakan history articles."
+>
+  <PageHead
+    eyebrow="Arakan history"
+    title="Image credits and reuse"
+    lede="Where each image comes from, who holds it, and on what terms it is shown."
+    crumbs={[
+      { label: 'History', path: '/history/' },
+      { label: 'Arakan', path: '/history/arakan/' },
+    ]}
+  />
+  <HistoryNav />
+  <div class="section">
+    <div class="wrap split">
+      <header><p class="eyebrow">Policy</p></header>
+      <div>
+        <h2>How images are used</h2>
+        <ul class="prose">
+          <li>Each image is shown with its source institution or creator and a rights or licence statement.</li>
+          <li>Reconstructions and AI-generated illustrations are labelled and are never presented as documentary evidence.</li>
+          <li>If you hold rights in an image shown here and believe it is used in error, please get in touch through the <a href={href('/contact/')}>contact page</a>.</li>
+        </ul>
+
+        <h2 style="margin-top:2.5rem">Credits</h2>
+        {
+          withImages.length === 0 ? (
+            <p class="muted">No images published yet. This list fills in automatically as articles are published.</p>
+          ) : (
+            <ul class="entry-list">
+              {withImages.map((a) => (
+                <li>
+                  <p>{a.data.cover!.caption}</p>
+                  <ul class="meta">
+                    <li>Source: {a.data.cover!.source}</li>
+                    <li>Rights: {a.data.cover!.rights}</li>
+                    {a.data.cover!.reconstruction && <li><span class="status">Reconstruction</span></li>}
+                  </ul>
+                  <p class="small">Used in: <a href={href(`/history/arakan/${a.id}/`)}>{a.data.title}</a></p>
+                </li>
+              ))}
+            </ul>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</Base>

@@ -1,0 +1,49 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import Todo from '../components/Todo.astro';
+import { site, profileLinks } from '../site';
+const links = profileLinks();
+---
+
+<Base title="Contact" description={`How to contact ${site.name}.`}>
+  <PageHead
+    eyebrow="Contact"
+    title="Get in touch"
+    lede="I welcome conversations about microgrid control, power electronics, engineering education, research collaboration, and responsible historical scholarship."
+  />
+  <div class="section">
+    <div class="wrap split">
+      <header><p class="eyebrow">Details</p></header>
+      <dl class="deflist">
+        <dt>Email</dt>
+        <dd>
+          {
+            site.email ? (
+              <a href={`mailto:${site.email}`}>{site.email}</a>
+            ) : (
+              <Todo>A public contact email address.</Todo>
+            )
+          }
+        </dd>
+        <dt>Institution</dt>
+        <dd>{site.institution}</dd>
+        {
+          links.length > 0 && (
+            <>
+              <dt>Profiles</dt>
+              <dd>
+                {links.map(([label, url], i) => (
+                  <>
+                    {i > 0 && ' · '}
+                    <a href={url} rel="me noopener">{label}</a>
+                  </>
+                ))}
+              </dd>
+            </>
+          )
+        }
+      </dl>
+    </div>
+  </div>
+</Base>
