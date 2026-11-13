@@ -1,0 +1,49 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import Todo from '../components/Todo.astro';
+import photo from '../assets/profile-photo.jpg';
+import { site } from '../site';
+import { href } from '../lib/url';
+---
+
+<Base title="About" description={`About ${site.name}, ${site.role} at ${site.institution}.`} ogType="profile">
+  <PageHead eyebrow="About" title={site.name} lede={site.role} />
+
+  <section class="section" aria-labelledby="bio">
+    <div class="wrap split">
+      <header>
+        <figure style="margin:0;max-width:15rem">
+          <Image src={photo} alt="Aung Khant at the ECCE Europe 2025 conference in Birmingham" width={400} height={400} />
+          <figcaption>ECCE Europe 2025 · Birmingham, UK</figcaption>
+        </figure>
+      </header>
+      <div>
+        <h2 id="bio">Profile</h2>
+        <p>
+          I am a PhD researcher at {site.institution} and an electrical and electronic engineer. My
+          doctoral research, <em>{site.researchTitle}</em>, concerns how hybrid AC/DC microgrids can be
+          interconnected and controlled.
+        </p>
+        <p>
+          My work draws on power electronics, model predictive control and converter control, using
+          MATLAB/Simulink and real-time and hardware-in-the-loop (HIL) validation. I also teach in
+          university laboratories and bring experience from engineering practice.
+        </p>
+        <p>
+          Separately from my engineering work, I research and write about the documented history of
+          Arakan as an independent interest.
+        </p>
+        <Todo>Education, previous roles and dates you wish to publish.</Todo>
+        <p>
+          <a class="arrow-link" href={href('/research/')}>Research</a>
+          &nbsp;&nbsp;
+          <a class="arrow-link" href={href('/cv/')}>CV</a>
+          &nbsp;&nbsp;
+          <a class="arrow-link" href={href('/history/')}>History</a>
+        </p>
+      </div>
+    </div>
+  </section>
+</Base>

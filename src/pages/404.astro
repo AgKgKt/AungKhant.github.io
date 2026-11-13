@@ -1,0 +1,14 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import { href } from '../lib/url';
+---
+
+<Base title="Page not found" noindex>
+  <PageHead eyebrow="Error 404" title="Page not found" lede="The page you were looking for has moved or does not exist.">
+    <div class="actions">
+      <a class="btn btn-primary" href={href('/')}>Go to the homepage</a>
+      <a class="btn btn-secondary" href={href('/research/')}>Research</a>
+    </div>
+  </PageHead>
+</Base>

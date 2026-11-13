@@ -1,0 +1,106 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import Todo from '../../components/Todo.astro';
+import PublicationItem from '../../components/PublicationItem.astro';
+import { site } from '../../site';
+import { href } from '../../lib/url';
+import { published } from '../../lib/content';
+
+const strands = (await published('research')).sort((a, b) => a.data.order - b.data.order);
+const pubs = (await published('publications')).sort((a, b) => b.data.year - a.data.year);
+---
+
+<Base
+  title="Research"
+  description="PhD research on system architecture and control strategies for hybrid AC/DC multi-microgrid systems."
+>
+  <PageHead
+    eyebrow={`PhD research · ${site.institution}`}
+    title={site.researchTitle}
+    lede="How should AC and DC microgrids exchange power with one another — and how can that exchange be controlled and validated before it reaches hardware?"
+  />
+
+  <section class="section" aria-labelledby="motivation">
+    <div class="wrap split">
+      <header><p class="eyebrow">Question and motivation</p></header>
+      <div>
+        <h2 id="motivation">Why this research</h2>
+        <p>
+          Local generation, storage and electrified loads are increasingly connected through power
+          electronic converters, and many of them are natively DC. Hybrid AC/DC microgrids serve both
+          kinds of equipment, and interconnecting several microgrids lets them support one another.
+        </p>
+        <p>
+          That interconnection depends on converters whose control determines whether power exchange is
+          stable and useful. This research addresses the system that links the microgrids and the
+          control strategies that govern it.
+        </p>
+        <Todo>The precise research questions and stated contributions, in the author's own words.</Todo>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="strands">
+    <div class="wrap split">
+      <header><p class="eyebrow">Research strands</p></header>
+      <div>
+        <h2 id="strands">System, control, validation</h2>
+        <ul class="entry-list">
+          {
+            strands.map((s) => (
+              <li>
+                <h3><a href={href(`/research/${s.id}/`)}>{s.data.title}</a></h3>
+                <p class="muted">{s.data.summary}</p>
+                <ul class="meta">{s.data.methods.map((m) => <li>{m}</li>)}</ul>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="overview">
+    <div class="wrap split">
+      <header><p class="eyebrow">System overview</p></header>
+      <div>
+        <h2 id="overview">The hybrid multi-microgrid system</h2>
+        <div class="figure-slot" role="img" aria-label="Space reserved for the system diagram">
+          <p>System diagram to be added.<br />Only an accurate, author-approved figure will appear here.</p>
+        </div>
+        <p class="small muted">
+          Acronyms are defined on first use throughout these pages. Published findings are kept separate
+          from work in progress.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="results">
+    <div class="wrap split">
+      <header><p class="eyebrow">Results and outputs</p></header>
+      <div>
+        <h2 id="results">Publications and presentations</h2>
+        <ul class="entry-list">
+          {pubs.map((p) => <PublicationItem pub={p} />)}
+        </ul>
+        <Todo>Results that are published or cleared for release, with their sources.</Todo>
+      </div>
+    </div>
+  </section>
+
+  <section class="section contact-band" aria-labelledby="collab">
+    <div class="wrap split">
+      <header><p class="eyebrow">Collaboration</p></header>
+      <div>
+        <h2 id="collab">Working together</h2>
+        <p>
+          I am glad to hear from researchers and engineers working on microgrid control, converter
+          control or real-time validation.
+        </p>
+        <p><a class="arrow-link" href={href('/contact/')}>Contact</a></p>
+      </div>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,35 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import Todo from '../components/Todo.astro';
+import PublicationItem from '../components/PublicationItem.astro';
+import { published } from '../lib/content';
+
+const pubs = (await published('publications')).sort((a, b) => b.data.year - a.data.year);
+const years = [...new Set(pubs.map((p) => p.data.year))];
+---
+
+<Base title="Publications" description="Publications, conference papers and presentations by Aung Khant.">
+  <PageHead
+    eyebrow="Publications"
+    title="Publications and presentations"
+    lede="Each record lists its status, venue, year and authors. Links and DOIs appear only for confirmed records."
+  />
+  <div class="section">
+    <div class="wrap">
+      {
+        years.map((year) => (
+          <section class="split" aria-labelledby={`y${year}`} style="margin-bottom:3rem">
+            <header><h2 id={`y${year}`}>{year}</h2></header>
+            <ul class="entry-list">
+              {pubs.filter((p) => p.data.year === year).map((p) => <PublicationItem pub={p} />)}
+            </ul>
+          </section>
+        ))
+      }
+      <Todo>
+        Full bibliographic records (titles, co-authors, DOIs), plus ORCID and Google Scholar links.
+      </Todo>
+    </div>
+  </div>
+</Base>

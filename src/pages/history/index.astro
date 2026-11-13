@@ -1,0 +1,105 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import HistoryNav from '../../components/HistoryNav.astro';
+import { href } from '../../lib/url';
+import { published, formatDate } from '../../lib/content';
+import { site } from '../../site';
+
+const featured = (await published('history'))
+  .filter((a) => a.data.featured)
+  .sort((a, b) => +b.data.published - +a.data.published)
+  .slice(0, 3);
+---
+
+<Base
+  title="History"
+  section="history"
+  description="Independent historical research and public scholarship by Aung Khant, focused on Arakan and Mrauk-U."
+>
+  <PageHead
+    eyebrow="Independent historical research and public scholarship"
+    title="History"
+    lede="Source-led writing on the documented history of Arakan, kept separate from my engineering research."
+  />
+  <HistoryNav />
+
+  <section class="section" aria-labelledby="scope">
+    <div class="wrap split">
+      <header><p class="eyebrow">Scope</p></header>
+      <div>
+        <h2 id="scope">What this section covers</h2>
+        <p>
+          These pages collect my independent study of Arakan's history, with particular attention to
+          Mrauk-U, regional exchange and the primary sources on which our knowledge rests.
+        </p>
+        <div class="note">
+          <p>
+            This is personal scholarship. It is not part of my doctoral research, and the views here do
+            not represent {site.institution}.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="approach">
+    <div class="wrap split">
+      <header><p class="eyebrow">Approach</p></header>
+      <div>
+        <h2 id="approach">How the research is presented</h2>
+        <ul class="columns">
+          <li>
+            <h3>Evidence before interpretation</h3>
+            <p>What the sources say is kept distinct from what I conclude from them.</p>
+          </li>
+          <li>
+            <h3>Uncertainty is stated</h3>
+            <p>Disputed names, dates, translations and locations are marked as disputed.</p>
+          </li>
+          <li>
+            <h3>Sources are cited</h3>
+            <p>Every article carries footnotes and a bibliography of primary and secondary sources.</p>
+          </li>
+          <li>
+            <h3>Images are credited</h3>
+            <p>
+              Provenance and reuse rights are recorded. Reconstructions and AI-generated illustrations
+              are labelled and never offered as documentary evidence.
+            </p>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="collections">
+    <div class="wrap split">
+      <header><p class="eyebrow">Collection</p></header>
+      <div>
+        <h2 id="collections">Arakan</h2>
+        <p>Articles, a combined bibliography and image credits.</p>
+        {
+          featured.length > 0 && (
+            <ul class="entry-list">
+              {featured.map((a) => (
+                <li>
+                  <ul class="meta">
+                    <li>{a.data.period}</li>
+                    <li><time datetime={a.data.published.toISOString()}>{formatDate(a.data.published)}</time></li>
+                    {a.data.placeholder && <li><span class="status">Placeholder</span></li>}
+                  </ul>
+                  <h3><a href={href(`/history/arakan/${a.id}/`)}>{a.data.title}</a></h3>
+                  <p class="muted">{a.data.summary}</p>
+                </li>
+              ))}
+            </ul>
+          )
+        }
+        <div class="actions">
+          <a class="btn btn-secondary" href={href('/history/arakan/')}>Explore Arakan history</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>

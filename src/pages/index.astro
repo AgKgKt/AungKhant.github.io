@@ -1,0 +1,239 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Todo from '../components/Todo.astro';
+import PublicationItem from '../components/PublicationItem.astro';
+import photo from '../assets/profile-photo.jpg';
+import { site, profileLinks } from '../site';
+import { href } from '../lib/url';
+import { published } from '../lib/content';
+
+const research = (await published('research')).sort((a, b) => a.data.order - b.data.order);
+const pubs = (await published('publications')).filter((p) => p.data.featured).slice(0, 2);
+const projects = (await published('projects')).filter((p) => p.data.featured).slice(0, 1);
+const links = profileLinks();
+const cvHref = site.cvPdf ? href(site.cvPdf) : href('/cv/');
+
+const sameAs = links.map(([, url]) => url);
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfilePage',
+  mainEntity: {
+    '@type': 'Person',
+    name: site.name,
+    jobTitle: 'PhD Researcher',
+    description: site.statement,
+    affiliation: { '@type': 'CollegeOrUniversity', name: site.institution },
+    knowsAbout: ['Hybrid AC/DC microgrids', 'Power electronics', 'Model predictive control', 'Hardware-in-the-loop simulation'],
+    url: new URL(href('/'), Astro.site).href,
+    ...(sameAs.length > 0 ? { sameAs } : {}),
+  },
+};
+
+const themes = [
+  {
+    title: 'Hybrid AC/DC microgrids',
+    text: 'Architectures that let AC and DC sub-grids, and neighbouring microgrids, exchange power.',
+    path: '/research/hybrid-multi-microgrid/',
+    link: 'The system under study',
+  },
+  {
+    title: 'Power electronics and converters',
+    text: 'The interlinking converters that make controlled power exchange possible.',
+    path: '/research/control-methods/#coordinated-converter-control',
+    link: 'Converter control',
+  },
+  {
+    title: 'Model predictive control',
+    text: 'Predictive control of converters, including finite-control-set MPC.',
+    path: '/research/control-methods/',
+    link: 'Control strategies',
+  },
+  {
+    title: 'Real-time simulation and HIL',
+    text: 'MATLAB/Simulink modelling followed by real-time and hardware-in-the-loop validation.',
+    path: '/research/hardware-validation/',
+    link: 'Validation approach',
+  },
+];
+---
+
+<Base title="Home" ogType="profile" jsonLd={jsonLd}>
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="eyebrow">{site.role}</p>
+        <h1 id="hero-title">{site.name}</h1>
+        <p class="lede">{site.statement}</p>
+        <div class="actions">
+          <a class="btn btn-primary" href={href('/research/')}>Explore my research</a>
+          <a class="btn btn-secondary" href={cvHref}>{site.cvPdf ? 'Download CV' : 'View CV'}</a>
+        </div>
+        {
+          links.length > 0 && (
+            <ul class="profile-links" aria-label="Profiles">
+              {links.map(([label, url]) => (
+                <li>
+                  <a href={url} rel="me noopener">{label}</a>
+                </li>
+              ))}
+            </ul>
+          )
+        }
+      </div>
+      <figure>
+        <Image
+          src={photo}
+          alt="Aung Khant standing beside the ECCE Europe 2025 conference banner in Birmingham"
+          width={400}
+          height={400}
+          loading="eager"
+        />
+        <figcaption>ECCE Europe 2025 · Birmingham, UK</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="current-research">
+    <div class="wrap split">
+      <header>
+        <p class="eyebrow">Current PhD research</p>
+        <p class="muted small">{site.institution}</p>
+      </header>
+      <div>
+        <h2 id="current-research">{site.researchTitle}</h2>
+        <ul class="columns">
+          <li>
+            <h3>System</h3>
+            <p>A hybrid AC/DC multi-microgrid architecture.</p>
+          </li>
+          <li>
+            <h3>Control</h3>
+            <p>Model predictive control and coordinated converter control.</p>
+          </li>
+          <li>
+            <h3>Validation</h3>
+            <p>MATLAB/Simulink modelling with real-time and hardware-in-the-loop (HIL) testing.</p>
+          </li>
+        </ul>
+        <Todo label="Diagram to add">
+          One accurate system diagram of the hybrid multi-microgrid belongs here.
+        </Todo>
+        <p style="margin-top:1.5rem"><a class="arrow-link" href={href('/research/')}>Read the research overview</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="themes">
+    <div class="wrap split">
+      <header>
+        <p class="eyebrow">Research themes</p>
+      </header>
+      <div>
+        <h2 id="themes" class="visually-hidden">Research themes</h2>
+        <ul class="columns">
+          {
+            themes.map((t) => (
+              <li>
+                <h3>{t.title}</h3>
+                <p>{t.text}</p>
+                <a class="small" href={href(t.path)}>{t.link}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="output">
+    <div class="wrap split">
+      <header>
+        <p class="eyebrow">Selected output</p>
+      </header>
+      <div>
+        <h2 id="output">Publications and projects</h2>
+        <ul class="entry-list">
+          {pubs.map((p) => <PublicationItem pub={p} />)}
+          {
+            projects.map((p) => (
+              <li>
+                <ul class="meta">
+                  <li>Project</li>
+                  {p.data.placeholder && <li><span class="status">Placeholder</span></li>}
+                </ul>
+                <h3>{p.data.title}</h3>
+                <p class="muted">{p.data.summary}</p>
+              </li>
+            ))
+          }
+        </ul>
+        <p style="margin-top:1.5rem">
+          <a class="arrow-link" href={href('/publications/')}>All publications</a>
+          &nbsp;&nbsp;
+          <a class="arrow-link" href={href('/projects/')}>All projects</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="teaching">
+    <div class="wrap split">
+      <header>
+        <p class="eyebrow">Teaching and practice</p>
+      </header>
+      <div>
+        <h2 id="teaching">Teaching and engineering practice</h2>
+        <p>
+          Alongside research I teach in university laboratories and practical sessions, guide and mark
+          dissertations, and bring experience from electrical engineering, commissioning and technical
+          service leadership.
+        </p>
+        <p><a class="arrow-link" href={href('/teaching/')}>Teaching and practice</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section history-teaser" aria-labelledby="history">
+    <div class="wrap split">
+      <header>
+        <p class="eyebrow">Independent historical research</p>
+      </header>
+      <div>
+        <h2 id="history">Arakan History and Digital Public Scholarship</h2>
+        <p>
+          Alongside my engineering research, I study and communicate the documented history of Arakan,
+          with particular attention to Mrauk-U, regional exchange, primary sources, and the responsible
+          presentation of contested historical evidence.
+        </p>
+        <div class="actions">
+          <a class="btn btn-secondary" href={href('/history/arakan/')}>Explore Arakan history</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section contact-band" aria-labelledby="contact">
+    <div class="wrap split">
+      <header>
+        <p class="eyebrow">Contact</p>
+      </header>
+      <div>
+        <h2 id="contact">Get in touch</h2>
+        <p>
+          I welcome conversations about microgrid control, power electronics, engineering education,
+          research collaboration, and responsible historical scholarship.
+        </p>
+        <div class="actions">
+          {
+            site.email ? (
+              <a class="btn btn-primary" href={`mailto:${site.email}`}>Email {site.email}</a>
+            ) : (
+              <a class="btn btn-primary" href={href('/contact/')}>Contact details</a>
+            )
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>

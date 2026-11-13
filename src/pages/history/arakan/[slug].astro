@@ -1,0 +1,135 @@
+---
+import { render } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../../../layouts/Base.astro';
+import PageHead from '../../../components/PageHead.astro';
+import HistoryNav from '../../../components/HistoryNav.astro';
+import { href } from '../../../lib/url';
+import { published, formatDate, readingTime } from '../../../lib/content';
+import { site } from '../../../site';
+
+export async function getStaticPaths() {
+  const articles = await published('history');
+  return articles.map((article) => ({ params: { slug: article.id }, props: { article } }));
+}
+
+const { article } = Astro.props;
+const { data } = article;
+const { Content } = await render(article);
+const url = new URL(href(`/history/arakan/${article.id}/`), Astro.site).href;
+const minutes = readingTime(article.body);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: data.title,
+  description: data.summary,
+  inLanguage: data.language,
+  datePublished: data.published.toISOString(),
+  dateModified: data.updated.toISOString(),
+  author: { '@type': 'Person', name: data.author, url: new URL(href('/about/'), Astro.site).href },
+  mainEntityOfPage: url,
+  ...(data.cover ? { image: new URL(data.cover.src.src, Astro.site).href } : {}),
+};
+---
+
+<Base
+  title={data.title}
+  description={data.summary}
+  section="history"
+  ogType="article"
+  jsonLd={jsonLd}
+  noindex={data.placeholder}
+>
+  <PageHead
+    eyebrow={data.period}
+    title={data.title}
+    lede={data.subtitle}
+    crumbs={[
+      { label: 'History', path: '/history/' },
+      { label: 'Arakan', path: '/history/arakan/' },
+    ]}
+  >
+    <ul class="meta" style="margin-top:1.25rem">
+      <li>By {data.author}</li>
+      <li>Published <time datetime={data.published.toISOString()}>{formatDate(data.published)}</time></li>
+      <li>Updated <time datetime={data.updated.toISOString()}>{formatDate(data.updated)}</time></li>
+      <li>{minutes} min read</li>
+    </ul>
+    <ul class="meta" aria-label="Topics">
+      {data.topics.map((t) => <li>{t}</li>)}
+    </ul>
+  </PageHead>
+  <HistoryNav />
+
+  <article class="section" lang={data.language}>
+    <div class="wrap">
+      {
+        data.placeholder && (
+          <div class="note" style="margin-bottom:2rem">
+            <p>
+              <strong>Placeholder.</strong> This page demonstrates the article layout. It is not a
+              historical article and makes no historical claims.
+            </p>
+          </div>
+        )
+      }
+
+      <section class="article-aside" style="margin-top:0;border-top:0;padding-top:0" aria-labelledby="abstract">
+        <h2 id="abstract">Abstract</h2>
+        <p>{data.summary}</p>
+      </section>
+
+      {
+        data.cover && (
+          <figure style="margin:2rem 0;max-width:var(--measure)">
+            <Image src={data.cover.src} alt={data.cover.alt} widths={[480, 800, 1200]} sizes="(max-width: 48rem) 100vw, 42rem" />
+            <figcaption>
+              {data.cover.reconstruction && <strong>Reconstruction / generated illustration — not documentary evidence. </strong>}
+              {data.cover.caption} Source: {data.cover.source}. {data.cover.rights}
+            </figcaption>
+          </figure>
+        )
+      }
+
+      <div class="prose article" style="margin-top:2rem"><Content /></div>
+
+      <section class="article-aside" aria-labelledby="uncertainty">
+        <h2 id="uncertainty">Evidence and uncertainty</h2>
+        <div class="note"><p>{data.uncertainty}</p></div>
+      </section>
+
+      <section class="article-aside" aria-labelledby="bibliography">
+        <h2 id="bibliography">Bibliography</h2>
+        {
+          data.bibliography.primary.length > 0 && (
+            <>
+              <h3 style="font-size:1rem;font-family:var(--sans)">Primary sources</h3>
+              <ul>{data.bibliography.primary.map((s) => <li>{s}</li>)}</ul>
+            </>
+          )
+        }
+        {
+          data.bibliography.secondary.length > 0 && (
+            <>
+              <h3 style="font-size:1rem;font-family:var(--sans)">Secondary sources</h3>
+              <ul>{data.bibliography.secondary.map((s) => <li>{s}</li>)}</ul>
+            </>
+          )
+        }
+      </section>
+
+      <section class="article-aside" aria-labelledby="cite">
+        <h2 id="cite">Suggested citation</h2>
+        <p>
+          {data.author}, “{data.title}”, <em>{site.name}: Arakan History</em>, published {formatDate(data.published)},
+          last updated {formatDate(data.updated)}, <span style="word-break:break-all">{url}</span>.
+        </p>
+        <p class="muted">
+          Views are personal and do not represent {site.institution}.
+        </p>
+        <p><a class="arrow-link" href={href('/history/arakan/')}>Back to Arakan history</a></p>
+      </section>
+    </div>
+  </article>
+</Base>

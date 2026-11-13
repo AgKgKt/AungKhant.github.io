@@ -1,0 +1,50 @@
+---
+import { nav, site, profileLinks } from '../site';
+import { href } from '../lib/url';
+
+interface Props {
+  section?: 'main' | 'history';
+}
+const { section = 'main' } = Astro.props;
+const year = new Date().getFullYear();
+const links = profileLinks();
+---
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <p class="footer-name">{site.name}</p>
+        <p>{site.role}<br />{site.institution}</p>
+      </div>
+      <nav aria-label="Footer">
+        <h2>Site</h2>
+        <ul>
+          {nav.map((item) => <li><a href={href(item.path)}>{item.label}</a></li>)}
+          <li><a href={href('/projects/')}>Projects</a></li>
+          <li><a href={href('/cv/')}>CV</a></li>
+          <li><a href={href('/contact/')}>Contact</a></li>
+        </ul>
+      </nav>
+      <div>
+        <h2>Elsewhere</h2>
+        <ul>
+          {links.map(([label, url]) => <li><a href={url} rel="me noopener">{label}</a></li>)}
+        </ul>
+      </div>
+    </div>
+    <div class="footer-legal">
+      <p>© {year} {site.name}. All rights reserved unless stated otherwise.</p>
+      {
+        section === 'history' ? (
+          <p>
+            The history pages are independent research and public scholarship. Views are personal and do
+            not represent {site.institution}.
+          </p>
+        ) : (
+          <p>Views expressed on this site are personal and do not represent {site.institution}.</p>
+        )
+      }
+    </div>
+  </div>
+</footer>

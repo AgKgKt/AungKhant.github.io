@@ -1,0 +1,69 @@
+---
+import Base from '../../../layouts/Base.astro';
+import PageHead from '../../../components/PageHead.astro';
+import HistoryNav from '../../../components/HistoryNav.astro';
+import { href } from '../../../lib/url';
+import { published } from '../../../lib/content';
+
+// Built automatically from the `bibliography` field of every non-placeholder article.
+const articles = (await published('history')).filter((a) => !a.data.placeholder);
+const collect = (kind: 'primary' | 'secondary') => {
+  const map = new Map<string, { id: string; title: string }[]>();
+  for (const a of articles)
+    for (const s of a.data.bibliography[kind])
+      map.set(s, [...(map.get(s) ?? []), { id: a.id, title: a.data.title }]);
+  return [...map.entries()].sort(([a], [b]) => a.localeCompare(b));
+};
+const groups = [
+  { id: 'primary', label: 'Primary sources', items: collect('primary') },
+  { id: 'secondary', label: 'Secondary sources', items: collect('secondary') },
+];
+---
+
+<Base
+  title="Sources and bibliography"
+  section="history"
+  description="Combined bibliography of primary and secondary sources cited in the Arakan history articles."
+>
+  <PageHead
+    eyebrow="Arakan history"
+    title="Sources and bibliography"
+    lede="Every source cited across the Arakan articles, gathered in one place and linked back to where it is used."
+    crumbs={[
+      { label: 'History', path: '/history/' },
+      { label: 'Arakan', path: '/history/arakan/' },
+    ]}
+  />
+  <HistoryNav />
+  <div class="section">
+    <div class="wrap">
+      {
+        groups.map((g) => (
+          <section class="split" aria-labelledby={g.id} style="margin-bottom:3rem">
+            <header><h2 id={g.id} style="font-size:1.4rem">{g.label}</h2></header>
+            {g.items.length === 0 ? (
+              <p class="muted">No sources listed yet. This list fills in automatically as articles are published.</p>
+            ) : (
+              <ul class="entry-list">
+                {g.items.map(([source, used]) => (
+                  <li>
+                    <p>{source}</p>
+                    <p class="small muted">
+                      Cited in:{' '}
+                      {used.map((u, i) => (
+                        <>
+                          {i > 0 && '; '}
+                          <a href={href(`/history/arakan/${u.id}/`)}>{u.title}</a>
+                        </>
+                      ))}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        ))
+      }
+    </div>
+  </div>
+</Base>
